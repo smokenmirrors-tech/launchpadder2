@@ -8,7 +8,7 @@ class Button extends EventEmitter {
     this.Color = Color(grid.api);
     this.state = this.Color.OFF;
     if (!y) {
-      this.x = this.gird.getX(note);
+      this.x = this.grid.getX(note);
       this.y = this.grid.getY(note);
     } else {
       this.x = note;
@@ -68,9 +68,9 @@ class Button extends EventEmitter {
     this.state = targetColor;
 
     if (this.y === 8) {
-      this.grid.output.sendMessage([176, this.toNote(), sColor]);
+      this.grid.output.sendMessage([176, this.toNote(), targetColor]);
     } else {
-      this.grid.output.sendMessage([144, this.toNote(), sColor]);
+      this.grid.output.sendMessage([144, this.toNote(), targetColor]);
     }
   }
 
@@ -113,13 +113,13 @@ class Button extends EventEmitter {
 
   toNote() {
     if (this.grid.api === 1) {
-      if (this.y == 8) {
+      if (this.y === 8) {
         return 104 + this.x;
       } else {
         return (this.y * 16) + this.x;
       }
     } else if (this.grid.api === 2) {
-      if (this.y == 8) {
+      if (this.y === 8) {
         return 104 + this.x;
       } else {
         return 70 - (this.y * 10) + (this.x + 11);
@@ -143,7 +143,7 @@ class Launchpad extends EventEmitter {
     this.blinking = [];
     this.input = new midi.input();
     this.input.openPort(this.midiInput);
-    this.output = new midid.output();
+    this.output = new midi.output();
     this.output.openPort(this.midiOutput);
 
     this.initGrid = this.initGrid.bind(this);
@@ -157,7 +157,7 @@ class Launchpad extends EventEmitter {
       const parsedMessage = msg.toString().split(',');
 
       let button;
-      if (msg[0] === '176') {
+      if (parseInt(msg[0], 10) === 176) {
         button = this.getButton(parseInt(msg[1], 10) % 8, 8);
       } else {
         button = this.getButton(msg[1]);
@@ -188,7 +188,7 @@ class Launchpad extends EventEmitter {
 
   getX(note) {
     if (this.api === 1) {
-      if (note % 8 == 0 && ((note / 8) % 2 == 1)) {
+      if (note % 8 === 0 && ((note / 8) % 2 === 1)) {
         return 8;
       }
     return note % 8;
@@ -199,7 +199,7 @@ class Launchpad extends EventEmitter {
 
   getY(note) {
     if (this.api === 1) {
-      if (note % 8 == 0 && ((note / 8) % 2 == 1)) {
+      if (note % 8 === 0 && ((note / 8) % 2 === 1)) {
         return Math.floor(note / 8 / 2);
       }
       return Math.floor(note / 8) / 2;
@@ -328,8 +328,8 @@ const Helper = {
         console.log(`${portName} connected. Using API v${api}`);
       }
     }
-    midiIn.closePort();
-    midiOut.closePort();
+    // midiIn.closePort();
+    // midiOut.closePort();
     return { midiInPort, midiOutPort, portName, api };
   }
 }

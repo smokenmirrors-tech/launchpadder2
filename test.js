@@ -5,7 +5,7 @@ console.log('After a successfull connection to LaunchPad hardware, press the MID
 
 const hwData = DataHelper.findPortsAndAPI();
 
-if (hwData.midiInPort && hwData.midiOutPort) {
+if (hwData.midiInPort !== null && hwData.midiOutPort !== null) {
   const Color = ColorHelper(hwData.api);
 
   const pad = new Launchpad(hwData.midiInPort, hwData.midiOutPort, hwData.api);
@@ -30,7 +30,7 @@ if (hwData.midiInPort && hwData.midiOutPort) {
 
   console.log('The Launchpadder2 interactive test performs some automated and interactive light feedback testing.');
   console.log('The test is attempting to make the first scene button blink on your LaunchPad hardware');
-  const state = Color.GREEN;
+  let state = Color.GREEN;
   const scene = pad.getButton(8, 0);
   scene.startBlinking(state);
 
