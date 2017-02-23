@@ -1,0 +1,12 @@
+{
+  "name": "@smoke-n-mirrors/launchpadder2",
+  "version": "2.0.0",
+  "description": "A JavaScript library for Novation Launchpad hardware",
+  "main": "index.js",
+  "repository": "https://github.com/smokenmirrors-tech/launchpadder2.git",
+  "author": "Smoke & Mirrors Technologies",
+  "license": "SEE LICENSE IN LICENSE.MD",
+  "dependencies": {
+    "midi": "^0.9.5"
+  }
+}
