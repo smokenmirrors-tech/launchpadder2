@@ -293,7 +293,7 @@ const Color = (api = 1) => {
 };
 
 const Helper = {
-  findPortsAndAPI() {
+  findPortsAndAPI(forceClosePorts) {
     const midiIn = new midi.input();
     const midiOut = new midi.output();
     const midiInCount = midiIn.getPortCount();
@@ -328,8 +328,10 @@ const Helper = {
         console.log(`${portName} connected. Using API v${api}`);
       }
     }
-    // midiIn.closePort();
-    // midiOut.closePort();
+    if (forceClosePorts) {
+      midiIn.closePort();
+      midiOut.closePort();
+    }
     return { midiInPort, midiOutPort, portName, api };
   }
 }
