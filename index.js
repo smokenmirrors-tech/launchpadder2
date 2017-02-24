@@ -154,7 +154,7 @@ class Launchpad extends EventEmitter {
     this.allDark = this.allDark.bind(this);
     this.tick = this.tick.bind(this);
 
-    this.input.on('message', (deltaTime, msg) => parseMIDI(msg));
+    this.input.on('message', (deltaTime, msg) => this.parseMIDI(msg));
 
     this.initGrid();
   }
