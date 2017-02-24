@@ -222,10 +222,15 @@ class Launchpad extends EventEmitter {
   }
 
   allDark() {
-    this.output.sendMessage([176, 0, 0]);
+    if (this.api === 1) {
+      this.output.sendMessage([176, 0, 0]);
+    }
 
     for (let x = 0; x < 9; x++) {
       for (let y = 0; y < 9; y++) {
+        if (this.api === 2) {
+          this.grid[x][y].dark();
+        }
         this.grid[x][y].state = false;
       }
     }
