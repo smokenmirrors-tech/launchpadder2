@@ -7,7 +7,7 @@ class Button extends EventEmitter {
     this.grid = grid;
     this.Color = Color(grid.api);
     this.state = this.Color.OFF;
-    if (!y) {
+    if (!y && y !== 0) {
       this.x = this.grid.getX(note);
       this.y = this.grid.getY(note);
     } else {
@@ -128,7 +128,7 @@ class Button extends EventEmitter {
   }
 
   toString() {
-    return `(${this.x}, ${this.y})`
+    return `(${this.x}, ${this.y})`;
   }
 
 }
@@ -146,6 +146,7 @@ class Launchpad extends EventEmitter {
     this.output = new midi.output();
     this.output.openPort(this.midiOutput);
 
+    this.parseMIDI = this.parseMIDI.bind(this);
     this.initGrid = this.initGrid.bind(this);
     this.getX = this.getX.bind(this);
     this.getY = this.getY.bind(this);
@@ -153,28 +154,30 @@ class Launchpad extends EventEmitter {
     this.allDark = this.allDark.bind(this);
     this.tick = this.tick.bind(this);
 
-    this.input.on('message', (deltaTime, msg) => {
-      const parsedMessage = msg.toString().split(',');
-
-      let button;
-      if (parseInt(msg[0], 10) === 176) {
-        button = this.getButton(parseInt(msg[1], 10) % 8, 8);
-      } else {
-        button = this.getButton(msg[1]);
-      }
-
-      const state = (parseInt(msg[2], 10) === 127) ? true : false;
-
-      if (state) {
-        this.emit('press', button);
-        button.emit('press', button);
-      } else {
-        this.emit('release', button);
-        button.emit('release', button);
-      }
-    });
+    this.input.on('message', (deltaTime, msg) => parseMIDI(msg));
 
     this.initGrid();
+  }
+
+  parseMIDI(msg) {
+    const parsedMessage = msg.toString().split(',');
+
+    let button;
+    if (parseInt(parsedMessage[0], 10) === 176) {
+      button = this.getButton(parseInt(parsedMessage[1], 10) % 8, 8);
+    } else {
+      button = this.getButton(parseInt(parsedMessage[1], 10));
+    }
+
+    const state = (parseInt(parsedMessage[2], 10) === 127) ? true : false;
+
+    if (state) {
+      this.emit('press', button);
+      button.emit('press', button);
+    } else {
+      this.emit('release', button);
+      button.emit('release', button);
+    }
   }
 
   initGrid() {
@@ -321,6 +324,7 @@ const Helper = {
         console.error('Launchpadder2 was unable to detect a LaunchPad device. Please check the hardware connection and try again.');
       } else {
         portName = midiIn.getPortName(midiInPort);
+        //TODO add proper support for the PRO board as the MK2 api is not fully compatible
         api = 1;
         if (portName.toLowerCase().includes('mk2') || portName.toLowerCase().includes('pro')) {
           api = 2;
