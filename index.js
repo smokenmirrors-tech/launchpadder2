@@ -212,7 +212,7 @@ class Launchpad extends EventEmitter {
   }
 
   getButton(x, y) {
-    if (y) {
+    if (y || y == 0) {
       if (x > 8 || y > 8) {
         return null;
       }
